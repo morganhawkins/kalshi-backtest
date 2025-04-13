@@ -1,0 +1,2 @@
+class SimFinished(Exception):
+    pass

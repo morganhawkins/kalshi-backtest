@@ -1,0 +1,2 @@
+class TimerFinished(Exception):
+    pass
