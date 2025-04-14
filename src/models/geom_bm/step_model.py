@@ -7,7 +7,7 @@ from scipy.special import erfinv as erfinv
 from src.base import BaseModel
 from src.models.geom_bm import _utils
 
-class StepModel(BaseModel):
+class GBMStepModel(BaseModel):
     """Model to price and gauge risk of barrier conctract. In this 
     context called 'step' contracts.
 

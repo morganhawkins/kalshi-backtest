@@ -5,7 +5,7 @@ import scipy as sp
 
 from src.base import BaseModel
 
-class RangeModel(BaseModel):
+class GBMRangeModel(BaseModel):
     def __init__(self, strike: Tuple, expiration: float):
         super().__init__(strike, expiration)
 
