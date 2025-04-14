@@ -13,7 +13,6 @@ class BaseTimer(ABC):
         """
         pass
 
-
     @abstractmethod
     def time() -> float:
         """Method to retrieve time
