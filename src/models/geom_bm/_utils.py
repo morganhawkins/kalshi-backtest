@@ -93,8 +93,9 @@ def vega(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> fl
     Returns:
         float: _description_
     """
-    formula_lhs = np.exp(-(np.log(strike) - np.log(u_price) - (tte*mu) )**2 / (2 * tte * (sigma**2)))
-    return formula_lhs * ( (np.log(strike) - np.log(u_price) - (tte*mu)) / (sigma**2 * np.sqrt(2 * tte * np.pi)))
+    expected_units_to_strike = np.log(strike) - np.log(u_price) - (tte*mu)
+    formula_lhs = np.exp(-(expected_units_to_strike)**2 / (2 * tte * (sigma**2)))
+    return formula_lhs * ( (expected_units_to_strike) / (sigma**2 * np.sqrt(2 * tte * np.pi)))
 
 def theta(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
     """_summary_
