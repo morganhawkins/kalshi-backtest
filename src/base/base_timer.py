@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from numbers import Number
 
 class BaseTimer(ABC):
     """
@@ -7,9 +8,15 @@ class BaseTimer(ABC):
     """
 
     @abstractmethod
-    def time() -> float:
+    def cycle() -> None:
+        """Method to cycle time
         """
-        Method to retrieve time
+        pass
+
+
+    @abstractmethod
+    def time() -> float:
+        """Method to retrieve time
 
         Returns:
             (float): timestamp in seconds

@@ -6,7 +6,7 @@ from time import time
 from src.exceptions import TimerFinished
 from src.base.base_timer import BaseTimer
 
-class JumpTimer(BaseTimer):
+class DiscreteTimer(BaseTimer):
     """
     Timer that allows for 
 

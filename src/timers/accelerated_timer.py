@@ -1,4 +1,5 @@
 from time import time
+from numbers import Number
 
 from src.base.base_timer import BaseTimer
 
@@ -18,8 +19,11 @@ class AcceleratedTimer(BaseTimer):
         self.ratio = ratio
 
         self._start_time = time()
+    
+    def cycle(self) -> None:
+        pass
 
-    def time(self) -> float:
+    def time(self) -> Number:
         time_delta = time() - self._start_time
         sim_time_delta = time_delta * self.ratio
         

@@ -1,2 +1,3 @@
 from . accelerated_timer import AcceleratedTimer
-from . jump_timer import JumpTimer
+from .discrete_timer import DiscreteTimer
+from . delta_timer import DeltaTimer
