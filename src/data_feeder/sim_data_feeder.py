@@ -99,7 +99,7 @@ class SimDataFeeder(BaseDataFeeder):
         """Refreshes current time and value to be
 
         Raises:
-            SimFinished: _description_
+            SimFinished: if out of data points
         """
         self._last_time = self._next_time
         self._last_value = self._next_value
@@ -118,7 +118,7 @@ class SimDataFeeder(BaseDataFeeder):
         self._next_time = self.time_history.popleft()
         self._next_value = self.value_history.popleft()
     
-    def get(self) -> Number:
+    def get(self) -> Dict[str, Number]:
         """Gets current data point
         """
         sim_time = self._time()
