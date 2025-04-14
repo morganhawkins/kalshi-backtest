@@ -1,2 +1,2 @@
-from . step_model import StepModel
-from . range_model import RangeModel
+from . step_model import DAGStepModel
+from . range_model import DAGRangeModel
