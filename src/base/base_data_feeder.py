@@ -6,7 +6,7 @@ class BaseDataFeeder(ABC):
     def get(self) -> Any:
         """
         Returns:
-            (Any): 
+            (Any): Relevant data
         """
         pass
     
