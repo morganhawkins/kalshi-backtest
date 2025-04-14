@@ -23,13 +23,14 @@ class JumpTimer(BaseTimer):
     @property
     def curr_time(self) -> Number:
         if self._curr_time is None:
-            raise ValueError("`must` cycle first before")
+            raise TimerFinished("No initial cycle, or out of time steps")
         return self._curr_time
     
     def cycle(self) -> None:
         try:
             self._curr_time = self._steps.popleft()
         except IndexError:
+            self._curr_time = None 
             raise TimerFinished("no more time steps to return")
 
     def time(self) -> Number: 
