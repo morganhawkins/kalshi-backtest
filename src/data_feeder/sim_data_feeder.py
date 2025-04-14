@@ -87,14 +87,6 @@ class SimDataFeeder(BaseDataFeeder):
             # if it has been set before, raise error
             raise Exception("Sim already started, cannot start again")
     
-    def _time(self) -> float:
-        # time change since sim start
-        delta_time = self._timer.time() - self.sim_start
-        # add time change to history start
-        sim_time = delta_time + self._history_start
-
-        return sim_time
-    
     def _refresh(self):
         """Refreshes current time and value to be
 
@@ -110,7 +102,7 @@ class SimDataFeeder(BaseDataFeeder):
             self._next_value = self.value_history.popleft()
         except IndexError:
             raise SimFinished("Simulation Finished")
-        
+    
     def start(self) -> None:
         """Begins the simualtion of data collection
         """
@@ -118,10 +110,18 @@ class SimDataFeeder(BaseDataFeeder):
         self._next_time = self.time_history.popleft()
         self._next_value = self.value_history.popleft()
     
+    def time(self) -> float:
+        # time change since sim start
+        delta_time = self._timer.time() - self.sim_start
+        # add time change to history start
+        sim_time = delta_time + self._history_start
+
+        return sim_time
+        
     def get(self) -> Dict[str, Number]:
         """Gets current data point
         """
-        sim_time = self._time()
+        sim_time = self.time()
 
         # if new data available in simulation time, update until not true
         while self._next_time <= sim_time:
