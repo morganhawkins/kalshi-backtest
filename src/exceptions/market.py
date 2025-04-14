@@ -3,3 +3,6 @@ class LiquidityError(Exception):
 
 class IllegalOrderError(Exception):
     pass
+
+class ExpiredMarketError(Exception):
+    pass
