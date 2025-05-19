@@ -61,7 +61,7 @@ class LazyLoader(BaseDataLoader):
         random_date = random_choice(list(self._path_data.keys()))
         random_strike = random_choice(list(self._path_data[random_date].keys()))
 
-        return self.query(random_date, random_strike)
+        return random_date, random_strike, self.query(random_date, random_strike)
 
             
     def iterate(self, date: Optional[str]=None) -> Generator[Tuple[str, str, pd.DataFrame]]:
