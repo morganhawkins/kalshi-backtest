@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Literal, Dict
+from typing import Literal, Dict, List
+from numbers import Number
 
-from src.base import BaseDataFeeder
+from src.base.base_data_feeder import BaseDataFeeder
+from src.base.base_order import BaseOrder
 from src.exceptions import LiquidityError, IllegalOrderError
 
 class BaseMarket(ABC):
@@ -35,19 +37,20 @@ class BaseMarket(ABC):
         self._max_pos = max_pos
 
         # init to defualt values
-        self._position = 0  
-        self._orders = []
+        self._position: int = 0  
+        self._cash: float = 0
+        self._orders: List[BaseOrder] = []
 
     @property
     def position(self) -> int:
-        return self.position
+        return self._position
     
     @property
     def tte(self) -> float:
         return self._expiration - self._data_feeder.time()
     
     @abstractmethod
-    def market_order(self, contracts: int, side: Literal["buy", "sell"]) -> float:
+    def market_order(self, contracts: int, side: Literal["buy", "sell"]) -> None:
         """places a market order, returns total cost to execute
 
         Args:
@@ -62,13 +65,16 @@ class BaseMarket(ABC):
         Returns:
             (float): cash flow to your account. (negative if buying, positive if selling)
         """
+        pass
+
     @abstractmethod
-    def limit_order(self, contracts: int, side: Literal["buy", "sell"]) -> float:
+    def limit_order(self, contracts: int, side: Literal["buy", "sell"], price: Number) -> None:
         """places a limit order, returns total cost to execute. Will execute at best possible price
 
         Args:
             contracts (int): number of contracts
             side (Literal["buy", "sell"]): side to take order on
+            price (Number): price to place limit order at
 
         Raises:
             LiquidityError: if there is no limit order available to take
@@ -78,18 +84,25 @@ class BaseMarket(ABC):
         Returns:
             (float): cash flow to your account. (negative if buying, positive if selling)
         """
-    @abstractmethod
-    def fill_open_orders(self) -> None:
-        """Fill orders based on retrieved data 
-
-        Raises:
-            ExpiredMarketError: if market is expired
-        """
+        pass
     
     @abstractmethod
     def liquidate(self) -> None:
         """liquidate position in market
         """
+        pass
+
+    @abstractmethod
+    def remove_orders(self, side=None, price=None):
+        """remove orders
+        """
+        pass
+    
+    @abstractmethod
+    def clear_orders(self) -> None:
+        """removes all limit orders
+        """
+        pass
 
     def position_value(self, method: Literal["bid", "ask", "mid", "auto"]="auto"):
         """returns value of position
@@ -103,8 +116,6 @@ class BaseMarket(ABC):
         Returns:
             float: value of position
         """
-        if self.tte < 0:
-            return self._resolution
         
         market = self._data_feeder.get()
 
@@ -118,16 +129,14 @@ class BaseMarket(ABC):
         else:
             raise ValueError("method must be one of 'bid', 'ask', 'mid', 'auto'")
         
-        return contract_value*self.position
+        print("contract_value:",contract_value)
+        
+        return contract_value*self.position + self._cash
     
-    # TODO: Should this just fill orders whenever a new datapoint is requested. Does this make sense?
-    # TODO: Should market just be an API/seperate_process that constantly loops and tracks orders?
-    # TODO: How would one track time with this? Maybe feeder has an update time param that returns all data skipped over?
-    # TODO: What if agents consume data through the market so that they have to fill orders whenever new data is requested?
-    # TODO: This relies on agent requesting data frequently enough?
-    # TODO: New object that holds market and timer and data feeder. Fills orders whenever timer is incremented with `timer.cycle` method
+
     def get_data(self) -> Dict:
-        data = self._data_feeder.get() 
-        self.fill_open_orders()
+        data = self._data_feeder.get()
         return data
+    
+
 
