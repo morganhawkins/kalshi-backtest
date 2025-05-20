@@ -7,8 +7,6 @@ from src.base.base_timer import BaseTimer
 from src.timers import AcceleratedTimer
 from src.exceptions import SimFinished
 
-# TODO: timer abstraction to allow for fast-forwarding
-
 class SimDataFeeder(BaseDataFeeder):
     """
     Object to simulate data realization
