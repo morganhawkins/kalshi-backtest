@@ -75,7 +75,7 @@ class FeederCreator:
 
         for date, strike, data in loader.iterate():
             #  auto-skip short data
-            if len(data) < 1000: continue
+            if len(data) < 3000: continue
 
             #  grabbing relevant underlying data
             hist_start = data["ts"].min()
