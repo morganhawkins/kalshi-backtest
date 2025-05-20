@@ -43,10 +43,10 @@ class GBMStepModel(BaseModel):
     def __call__(self, price: float, u_price: float, estimated_sigma: float, estimated_mu: float, tte: float):
         iv = self._iv(price, u_price, self.strike, estimated_mu, tte)
         value = self._value(u_price, self.strike, estimated_sigma, estimated_mu, tte)
-        delta = self._delta(u_price, self.strike, estimated_sigma, estimated_mu, tte)
-        vega = self._vega(u_price, self.strike, estimated_sigma, estimated_mu, tte)
-        theta = self._theta(u_price, self.strike, estimated_sigma, estimated_mu, tte)
-        gamma = self._gamma(u_price, self.strike, estimated_sigma, estimated_mu, tte)
+        delta = self._delta(u_price, self.strike, iv, estimated_mu, tte)
+        vega = self._vega(u_price, self.strike, iv, estimated_mu, tte)
+        theta = self._theta(u_price, self.strike, iv, estimated_mu, tte)
+        gamma = self._gamma(u_price, self.strike, iv, estimated_mu, tte)
 
         return {
             "value": value,

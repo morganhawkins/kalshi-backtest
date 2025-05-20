@@ -16,7 +16,7 @@ def value(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> f
         tte (float): time to contract expiration in hours
 
     Returns:
-        float: _description_
+        float: value of derivative under assumtions of Black-Scholes
     """
             
     if tte <= 0: 
@@ -30,18 +30,18 @@ def iv(price: float, u_price: float, strike: int, mu: float, tte: float) -> floa
     """_summary_
 
     Args:
-        price (float): _description_
-        u_price (float): _description_
-        strike (int): _description_
-        sigma (float): _description_
-        mu (float): _description_
-        tte (float): _description_
+        price (float): price of contract
+        u_price (float): price of underlying asset
+        strike (int): strike price of contract
+        sigma (float): volatility in standard dev of hourly log(return)
+        mu (float): expected return in expected hourly return
+        tte (float): time to contract expiration in hours
 
     Raises:
-        ValueError: _description_
+        ValueError: tte is less than 0
 
     Returns:
-        float: _description_
+        float: implied volatility of the underlying asset
     """
     if tte<=0:
         raise ValueError("Time to expiration must be strictly positive")
@@ -73,7 +73,7 @@ def delta(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> f
         tte (float): time to contract expiration in hours
 
     Returns:
-        float: _description_
+        float: sesitivity to price of underlying
     """
     deviations_to_strike = ( np.log(strike) - np.log(u_price) - (tte*mu) ) / ( np.sqrt(2*tte) * sigma )
     denominator = u_price * sigma * np.sqrt(2 * tte * np.pi)
@@ -91,7 +91,7 @@ def vega(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> fl
         tte (float): time to contract expiration in hours
 
     Returns:
-        float: _description_
+        float: sensitivity to underlying security volatility
     """
     expected_units_to_strike = np.log(strike) - np.log(u_price) - (tte*mu)
     formula_lhs = np.exp(-(expected_units_to_strike)**2 / (2 * tte * (sigma**2)))
@@ -101,15 +101,15 @@ def theta(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> f
     """_summary_
 
     Args:
-        price (float): _description_
-        u_price (float): _description_
-        strike (int): _description_
-        sigma (float): _description_
-        mu (float): _description_
-        tte (float): _description_
+        price (float): price of contract
+        u_price (float): price of underlying asset
+        strike (int): strike price of contract
+        sigma (float): volatility in standard dev of hourly log(return)
+        mu (float): expected return in expected hourly return
+        tte (float): time to contract expiration in hours
 
     Returns:
-        float: _description_
+        float: sensitiviy to time to expiration
     """
     formula_lhs = (np.log(u_price) - np.log(strike) - (tte*mu)) / (sigma*np.sqrt(8 * np.pi * (tte**3)))
     return formula_lhs * np.exp(-(np.log(strike) - np.log(u_price) - (tte*mu) )**2 / (2 * tte * (sigma**2)))
@@ -126,7 +126,7 @@ def gamma(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> f
         tte (float): time to contract expiration in hours
 
     Returns:
-        float: _description_
+        float: delta's sensitivity to changes in underlying'sprice
     """
     formula_lhs = np.exp(-(np.log(strike) - np.log(u_price) - (tte*mu) )**2 / (2 * tte * (sigma**2)))
     return formula_lhs * ( (np.log(strike) - np.log(u_price) - (tte*(sigma**2 + mu))) / ( tte * (sigma**3) * (u_price**2) * np.sqrt(2 * tte * np.pi)) )
