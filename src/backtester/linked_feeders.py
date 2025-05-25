@@ -33,7 +33,7 @@ class FeederCreator:
 
         for date, strike, data in loader.iterate():
             #  auto-skip short data
-            if len(data) < 5: continue
+            if len(data) < 3000: continue
 
             #  grabbing relevant underlying data
             hist_start = data["ts"].min()
@@ -45,19 +45,20 @@ class FeederCreator:
 
             # underlying feeder
             u_hist_dict = cls.make_feeder_feeder(active_u_data)
-            under_feeder = SimDataFeeder(hist_start, expiration_ts, u_hist_dict, timer)
+            under_feeder = SimDataFeeder(active_u_data['ts'].min(), expiration_ts, u_hist_dict, timer)
 
             # deriv feeder
             d_hist_dict = cls.make_feeder_feeder(data)
-            deriv_feeder = SimDataFeeder(hist_start, expiration_ts, d_hist_dict, timer)
+            deriv_feeder = SimDataFeeder(active_u_data['ts'].min(), expiration_ts, d_hist_dict, timer)
 
             # compiling metadata
-            outcome = active_u_data[active_u_data["ts"] <= expiration_ts]["close"].tolist()[-1]
-            outcome = outcome >= int(strike)
+            terminal_u_price = active_u_data[active_u_data["ts"] <= expiration_ts]["close"].values[-1]
+            outcome = terminal_u_price >= int(strike)
 
             meta_data = {"strike": strike,
-                         "date": date,
+                         "terminal_u_price":terminal_u_price,
                          "outcome": outcome,
+                         "date": date,
                          "data_points": len(data),
                          "expiration_ts": expiration_ts}
 
@@ -75,7 +76,7 @@ class FeederCreator:
 
         for date, strike, data in loader.iterate():
             #  auto-skip short data
-            if len(data) < 3000: continue
+            if len(data) < 50: continue
 
             #  grabbing relevant underlying data
             hist_start = data["ts"].min()
