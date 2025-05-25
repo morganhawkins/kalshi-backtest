@@ -16,37 +16,38 @@ class GBMStepModel(BaseModel):
         expiration (float): unix timestamp representing contract expiration
 
     """
-    def __init__(self, strike: int, expiration: float):
-        super().__init__(strike, expiration)
-
-        if not isinstance(strike, int):
-            raise TypeError("`strike` must be an int for step contracts")
-        
-    def _value(self, u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
+    @staticmethod
+    def _value(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
         return _utils.value(u_price, strike, sigma, mu, tte)
     
-    def _iv(self, price: float, u_price: float, strike: int, mu: float, tte: float) -> float:
+    @staticmethod
+    def _iv(price: float, u_price: float, strike: int, mu: float, tte: float) -> float:
         return _utils.iv(price, u_price, strike, mu, tte)
-
-    def _delta(self, u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
+    
+    @staticmethod
+    def _delta(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
         return _utils.delta(u_price, strike, sigma, mu, tte)
-
-    def _vega(self, u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
+    
+    @staticmethod
+    def _vega(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
         return _utils.vega(u_price, strike, sigma, mu, tte)
-
-    def _theta(self, u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
+    
+    @staticmethod
+    def _theta(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
         return _utils.theta(u_price, strike, sigma, mu, tte)
-
-    def _gamma(self, u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
+    
+    @staticmethod
+    def _gamma(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
         return _utils.gamma(u_price, strike, sigma, mu, tte)
     
-    def __call__(self, price: float, u_price: float, estimated_sigma: float, estimated_mu: float, tte: float):
-        iv = self._iv(price, u_price, self.strike, estimated_mu, tte)
-        value = self._value(u_price, self.strike, estimated_sigma, estimated_mu, tte)
-        delta = self._delta(u_price, self.strike, iv, estimated_mu, tte)
-        vega = self._vega(u_price, self.strike, iv, estimated_mu, tte)
-        theta = self._theta(u_price, self.strike, iv, estimated_mu, tte)
-        gamma = self._gamma(u_price, self.strike, iv, estimated_mu, tte)
+    @classmethod
+    def __call__(cls, price: float, u_price: float, estimated_sigma: float, estimated_mu: float, tte: float, strike: float):
+        iv = cls._iv(price, u_price, strike, estimated_mu, tte)
+        value = cls._value(u_price, strike, estimated_sigma, estimated_mu, tte)
+        delta = cls._delta(u_price, strike, iv, estimated_mu, tte)
+        vega = cls._vega(u_price, strike, iv, estimated_mu, tte)
+        theta = cls._theta(u_price, strike, iv, estimated_mu, tte)
+        gamma = cls._gamma(u_price, strike, iv, estimated_mu, tte)
 
         return {
             "value": value,

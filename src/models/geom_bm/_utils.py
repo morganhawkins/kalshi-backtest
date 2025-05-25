@@ -58,7 +58,8 @@ def iv(price: float, u_price: float, strike: int, mu: float, tte: float) -> floa
     if implied_vol >= 0:
         return implied_vol
     else:
-        warn("Negative IV result, implied future expected return in underlying asset")
+        # warn_string = f"Negative IV result, implied future expected return in underlying asset {u_price} {strike} {price}"
+        # warn(warn_string)
         return np.nan 
 
 def delta(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
@@ -130,6 +131,7 @@ def gamma(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> f
     """
     formula_lhs = np.exp(-(np.log(strike) - np.log(u_price) - (tte*mu) )**2 / (2 * tte * (sigma**2)))
     return formula_lhs * ( (np.log(strike) - np.log(u_price) - (tte*(sigma**2 + mu))) / ( tte * (sigma**3) * (u_price**2) * np.sqrt(2 * tte * np.pi)) )
+
 
 
 
