@@ -44,6 +44,10 @@ class BaseMarket(ABC):
     @property
     def position(self) -> int:
         return self._position
+
+    @property
+    def cash(self) -> float:
+        return self._cash
     
     @property
     def tte(self) -> float:
