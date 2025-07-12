@@ -22,8 +22,6 @@ class HedgingAgent(BaseAgent):
                  strike: float,
                  max_under_pos: float=.0005,
                  min_tte_hedge: float=.15
-
-
                  ):
         self.timer = timer
         self.deriv_feeder = derivative_feeder

@@ -1,20 +1,9 @@
-from typing import Tuple
-
-import numpy as np
-from scipy.special import erf as erf
-from scipy.special import erfinv as erfinv
-
 from src.base import BaseModel
 from src.models.geom_bm import _utils
 
 class GBMStepModel(BaseModel):
     """Model to price and gauge risk of barrier conctract. In this 
     context called 'step' contracts.
-
-    Attributes:
-        strike (int): contract strike price in usd
-        expiration (float): unix timestamp representing contract expiration
-
     """
     @staticmethod
     def _value(u_price: float, strike: int, sigma: float, mu: float, tte: float) -> float:
