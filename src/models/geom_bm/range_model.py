@@ -3,7 +3,7 @@ from typing import Tuple
 from src.base import BaseModel
 from src.models.geom_bm import _utils
 
-class GBMStepModel(BaseModel):
+class GBMRangeModel(BaseModel):
     """Model to price and gauge risk of event contract. In this 
     context called 'range' contracts.
     """
