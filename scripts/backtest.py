@@ -23,64 +23,61 @@ def get_terminal_port_values(max_under_pos: float, min_tte_hedge: float) -> list
         # looping through contracts
         deriv_feeder.start()
         under_feeder.start()
-        agent = HedgingAgent(deriv_feeder, under_feeder, timer,
-                             meta_data['strike'], max_under_pos=max_under_pos, min_tte_hedge=min_tte_hedge)
+        # init hedging agent
+        agent = HedgingAgent(
+            deriv_feeder, 
+            under_feeder, 
+            timer,
+            meta_data['strike'], 
+            max_under_pos=max_under_pos, 
+            min_tte_hedge=min_tte_hedge
+        )
 
+        # cycle the timer & consume new data until simulation finished
         while True:
             timer.cycle()
-
             try:
                 agent.consume()
-
             except SimFinished:
-                # print(f"finished {data_points_count} {meta_data['strike']} {meta_data['date']}")
-                net_end = agent.reconcile_hedge(
-                    meta_data['terminal_u_price']) + meta_data['outcome']
+                # aggregate all trades performed and terminal deriv value
+                terminal_u_price = meta_data['terminal_u_price']
+                deriv_outcome = meta_data['outcome']
+                net_end = agent.reconcile_hedge(terminal_u_price) + deriv_outcome
                 end_values.append(net_end)
                 break
 
     return end_values
 
 
-results = []
+if __name__ == "__main__":
+    results = []
 
-# backtest
-max_max_under_pos = .0015
-max_min_tte_hedge = .7
-samples = 12
-sampled_no_hedge = False
-for max_under_pos in (np.linspace(0, max_max_under_pos, samples)):
-    for min_tte_hedge in tqdm(np.linspace(0, max_min_tte_hedge, samples)):
-        if max_under_pos == 0:
-            if not sampled_no_hedge:
-                sampled_no_hedge = True
-            else:
-                continue
+    # agent parameters
+    max_max_under_pos = .0015
+    max_min_tte_hedge = .7
+    samples = 12
 
-        end_values = get_terminal_port_values(
-            max_under_pos=max_under_pos, min_tte_hedge=min_tte_hedge)
-        mean = np.mean(end_values)
-        var = np.var(end_values)
-        row = {
-            "max_under_pos": max_under_pos,
-            "min_tte_hedge": min_tte_hedge,
-            "mean": mean,
-            "var": var,
-        }
+    # TODO: should probably use bayesian opt search, not exhaustive
+    # grid search parameters
+    for max_under_pos in (np.linspace(0, max_max_under_pos, samples)):
+        for min_tte_hedge in tqdm(np.linspace(0, max_min_tte_hedge, samples)):
+            # perform backtest
+            end_values = get_terminal_port_values(
+                max_under_pos=max_under_pos, 
+                min_tte_hedge=min_tte_hedge
+            )
+            # agg results and append
+            mean = np.mean(end_values)
+            var = np.var(end_values)
+            row = {
+                "max_under_pos": max_under_pos,
+                "min_tte_hedge": min_tte_hedge,
+                "mean": mean,
+                "var": var,
+            }
+            results.append(row)
 
-        results.append(row)
+    # save results
+    res_df = pd.DataFrame(results)
+    res_df.to_csv("hedge_agent_res.csv")
 
-
-# save results
-res_df = pd.DataFrame(results)
-res_df.to_csv("hedge_agent_res.csv")
-
-# printing results
-am = res_df['var'].argmin()
-min_var = res_df.iloc[am]
-no_hedge = res_df.iloc[0]
-print("Variance With No Hedge")
-print(no_hedge, "\n\n")
-
-print("Variance With Delta Hedge")
-print(min_var, "\n\n")
