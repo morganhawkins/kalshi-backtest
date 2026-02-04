@@ -1,9 +1,7 @@
 from numpy import isnan
 from numpy import round as np_round
 
-from src.base import BaseDataFeeder
-from src.base import BaseAgent
-from src.base import BaseTimer
+from src.base import BaseDataFeeder, BaseAgent, BaseModel, BaseTimer
 from src.models.geom_bm import GBMStepModel
 
 
@@ -23,12 +21,13 @@ class HedgingAgent(BaseAgent):
                  timer: BaseTimer,
                  strike: float,
                  max_under_pos: float = .0005,
-                 min_tte_hedge: float = .15
+                 min_tte_hedge: float = .15,
+                 model: BaseModel = GBMStepModel
                  ):
         self.timer = timer
         self.deriv_feeder = derivative_feeder
         self.under_feeder = underlying_feeder
-        self.model = GBMStepModel
+        self.model = model
         self.strike = strike
 
         # tracking positions

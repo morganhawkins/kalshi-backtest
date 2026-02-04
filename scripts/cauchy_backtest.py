@@ -7,7 +7,7 @@ import numpy as np
 from src.exceptions import SimFinished
 from src.agents import HedgingAgent
 from src.backtester import FeederCreator
-
+from src.models.geom_cauchy import CauchyStepModel
 warnings.filterwarnings('ignore')
 
 
@@ -31,6 +31,7 @@ def get_terminal_port_values(max_under_pos: float, min_tte_hedge: float) -> list
             meta_data['strike'], 
             max_under_pos=max_under_pos, 
             min_tte_hedge=min_tte_hedge,
+            model = CauchyStepModel
         )
 
         # cycle the timer & consume new data until simulation finished
