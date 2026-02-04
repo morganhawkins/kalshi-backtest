@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+
 class BaseDataFeeder(ABC):
     @abstractmethod
     def time(self) -> float:
@@ -18,4 +19,3 @@ class BaseDataFeeder(ABC):
             (Any): Relevant data
         """
         pass
-    

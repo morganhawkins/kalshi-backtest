@@ -6,6 +6,7 @@ from src.base.base_data_feeder import BaseDataFeeder
 from src.base.base_order import BaseOrder
 from src.exceptions import LiquidityError, IllegalOrderError
 
+
 class BaseMarket(ABC):
     """Base class for a market object. A this is meant to represent a market for a specific
     contract (specific date and expiration).
@@ -14,13 +15,13 @@ class BaseMarket(ABC):
         position (int): number of contracts held
     """
 
-    def __init__(self, 
+    def __init__(self,
                  data_feeder: BaseDataFeeder,
                  strike: int,
                  expiration: float,
-                 resolution: Literal[0,1],
-                 allow_short: bool=True,
-                 max_pos: int=None):
+                 resolution: Literal[0, 1],
+                 allow_short: bool = True,
+                 max_pos: int = None):
         """_summary_
 
         Args:
@@ -37,7 +38,7 @@ class BaseMarket(ABC):
         self._max_pos = max_pos
 
         # init to defualt values
-        self._position: int = 0  
+        self._position: int = 0
         self._cash: float = 0
         self._orders: List[BaseOrder] = []
 
@@ -48,11 +49,11 @@ class BaseMarket(ABC):
     @property
     def cash(self) -> float:
         return self._cash
-    
+
     @property
     def tte(self) -> float:
         return self._expiration - self._data_feeder.time()
-    
+
     @abstractmethod
     def market_order(self, contracts: int, side: Literal["buy", "sell"]) -> None:
         """places a market order, returns total cost to execute
@@ -89,7 +90,7 @@ class BaseMarket(ABC):
             (float): cash flow to your account. (negative if buying, positive if selling)
         """
         pass
-    
+
     @abstractmethod
     def liquidate(self) -> None:
         """liquidate position in market
@@ -101,14 +102,14 @@ class BaseMarket(ABC):
         """remove orders
         """
         pass
-    
+
     @abstractmethod
     def clear_orders(self) -> None:
         """removes all limit orders
         """
         pass
 
-    def position_value(self, method: Literal["bid", "ask", "mid", "auto"]="auto"):
+    def position_value(self, method: Literal["bid", "ask", "mid", "auto"] = "auto"):
         """returns value of position
 
         Args:
@@ -120,27 +121,24 @@ class BaseMarket(ABC):
         Returns:
             float: value of position
         """
-        
+
         market = self._data_feeder.get()
 
         if method == "auto":
-            method = "bid" if self.position > 0 else "ask" 
+            method = "bid" if self.position > 0 else "ask"
 
         if method in ["bid", "ask"]:
             contract_value = market[method]
         elif method == "mid":
             contract_value = (market["bid"] + market["ask"])/2
         else:
-            raise ValueError("method must be one of 'bid', 'ask', 'mid', 'auto'")
-        
-        print("contract_value:",contract_value)
-        
+            raise ValueError(
+                "method must be one of 'bid', 'ask', 'mid', 'auto'")
+
+        print("contract_value:", contract_value)
+
         return contract_value*self.position + self._cash
-    
 
     def get_data(self) -> Dict:
         data = self._data_feeder.get()
         return data
-    
-
-

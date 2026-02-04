@@ -1,6 +1,7 @@
 from typing import Tuple, Union
 from abc import ABC, abstractmethod
 
+
 class BaseModel(ABC):
     """Abstract class to describe pricing entities. 
 

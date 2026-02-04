@@ -3,6 +3,7 @@ from numbers import Number
 
 from src.base.base_timer import BaseTimer
 
+
 class AcceleratedTimer(BaseTimer):
     """
     Timer that allows for 
@@ -10,7 +11,8 @@ class AcceleratedTimer(BaseTimer):
     Attributes:
         ratio (float): Flaot in (0,inf). Ratio of simulated speed to real speed
     """
-    def __init__(self, ratio: float=1.0):
+
+    def __init__(self, ratio: float = 1.0):
         """_summary_
 
         Args:
@@ -19,16 +21,16 @@ class AcceleratedTimer(BaseTimer):
         self.ratio = ratio
 
         self._start_time = timestamp()
-    
+
     @property
     def curr_time(self) -> Number:
         return self.time()
-    
+
     def cycle(self) -> None:
         pass
 
     def time(self) -> Number:
         time_delta = timestamp() - self._start_time
         sim_time_delta = time_delta * self.ratio
-        
+
         return sim_time_delta

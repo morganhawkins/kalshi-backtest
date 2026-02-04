@@ -7,9 +7,10 @@ import pandas as pd
 
 from src.base import BaseDataLoader
 
+
 class LazyLoader(BaseDataLoader):
     def __init__(self, root_dir: Path):
-        if not os.path.isdir(root_dir): 
+        if not os.path.isdir(root_dir):
             raise ValueError(f"`root_dir` is not a directory {root_dir}")
         self._root_dir = root_dir
 
@@ -19,7 +20,8 @@ class LazyLoader(BaseDataLoader):
         """creates the `_path_data` attribute to store directory structure
         """
         dates = os.listdir(self._root_dir)
-        dates = [dir_ for dir_ in dates if os.path.isdir(self._root_dir / dir_)]
+        dates = [dir_ for dir_ in dates if os.path.isdir(
+            self._root_dir / dir_)]
 
         path_data = {}
         for date_ in dates:
@@ -50,7 +52,7 @@ class LazyLoader(BaseDataLoader):
         data = pd.read_csv(path)
 
         return data
-    
+
     def sample(self) -> pd.DataFrame:
         """Uniformly samples a date, then uniformly samples a strike. Note: this
           is not a uniform distribution across all valid (date, strike) pairs
@@ -59,12 +61,12 @@ class LazyLoader(BaseDataLoader):
             pd.DataFrame: data for random date and strike
         """
         random_date = random_choice(list(self._path_data.keys()))
-        random_strike = random_choice(list(self._path_data[random_date].keys()))
+        random_strike = random_choice(
+            list(self._path_data[random_date].keys()))
 
         return random_date, int(random_strike), self.query(random_date, random_strike)
 
-            
-    def iterate(self, date: Optional[str]=None) -> Generator[Tuple[str, str, pd.DataFrame]]:
+    def iterate(self, date: Optional[str] = None) -> Generator[Tuple[str, str, pd.DataFrame]]:
         """returns a generator to iterate over all points, or over a specific date of contracts 
 
         Args:
@@ -80,6 +82,5 @@ class LazyLoader(BaseDataLoader):
                     yield (date, int(strike), data)
         else:
             for strike, path in self._path_data[date].items():
-                    data = self.query(date, strike)
-                    yield (date, int(strike), data)
-            
+                data = self.query(date, strike)
+                yield (date, int(strike), data)

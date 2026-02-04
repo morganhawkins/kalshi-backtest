@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from numbers import Number
 from typing import Literal
 
+
 @dataclass
 class BaseOrder():
     side: Literal["buy", "sell"]
@@ -10,12 +11,12 @@ class BaseOrder():
 
     def fill_cash_flow(self, price: Number) -> Number:
         side = -1 if self.side == "buy" else 1
-        
+
         return side * price * self.count
-    
+
     def fill_contract_flow(self) -> int:
         side = 1 if self.side == "buy" else -1
-        
+
         return side * self.count
 
     def fill_price(self, price: Number) -> Number:

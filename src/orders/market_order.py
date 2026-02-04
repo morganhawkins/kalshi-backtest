@@ -3,6 +3,7 @@ from typing import Literal
 
 from src.base import BaseOrder
 
+
 class MarketOrder(BaseOrder):
     def __init__(self, count: int, side: Literal["buy", "sell"]):
         if not (side in ["buy", "sell"]):

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from numbers import Number
 
+
 class BaseTimer(ABC):
     """
     Base class for different Timers. Timers are used to track time. Can be 
