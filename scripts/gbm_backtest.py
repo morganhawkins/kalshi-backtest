@@ -15,7 +15,7 @@ def get_terminal_port_values(max_under_pos: float, min_tte_hedge: float) -> list
     """evaluate hedge strategy with the following two hyperparameters
     Args:
         max_under_pos (float): maximum magnitude of delta hedge in shares
-        min_tte_hedge (float): will not rebalance hedge after this expiration time
+        min_tte_hedge (float): will not rebalance hedge if time to expiration is lower than this
     """
     end_values = []
     for deriv_feeder, under_feeder, timer, meta_data in FeederCreator.iterate(timedelta=60):

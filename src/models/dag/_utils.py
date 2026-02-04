@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class DAG:
     """
     Very similar to binary tree model, but here our up_factor*down_factor = 1 so that our tree is actually a direct acyclic graph where nodes in the 
@@ -10,7 +13,7 @@ class DAG:
     """
 
     # TODO: change args to mu and sigma and auto convert to tree form with up/down factor
-    def __init__(self, stock_value: float = None, deriv_value: float = None):
+    def __init__(self, stock_value: Optional[float] = None, deriv_value: Optional[float] = None) -> None:
         assert stock_value >= 0, "stock cannot have negative value"
 
         self.up = None
@@ -18,7 +21,7 @@ class DAG:
         self.stock_value = stock_value
         self.deriv_value = deriv_value
 
-    def grow_tree(self, depth, u):
+    def grow_tree(self, depth: int, u: float) -> None:
         d = 1/u
         assert (depth > 0) and (u > 1), "invalid parameters passed"
 
@@ -36,7 +39,7 @@ class DAG:
             self.up.grow_tree(depth=depth - 1, u=u)
             self.down.grow_tree(depth=depth - 1, u=u)
 
-    def is_terminal(self):
+    def is_terminal(self) -> bool:
         no_up = self.up == None
         no_down = self.down == None
 
@@ -44,7 +47,7 @@ class DAG:
 
         return no_up
 
-    def depth(self):
+    def depth(self) -> int:
         """
         returns the number of additional levels after the node from which function called
         """
@@ -53,7 +56,7 @@ class DAG:
         else:
             return 1 + self.up.depth()
 
-    def get_terminal_values(self, get_stock=True):
+    def get_terminal_values(self, get_stock: bool = True) -> list[float]:
 
         depth = self.depth()
         # print(depth,"\n\n")
@@ -81,7 +84,7 @@ class DAG:
 
         return term_vals
 
-    def calc_node_deriv_value(self, rate):
+    def calc_node_deriv_value(self, rate: float) -> float:
         """
         """
         delta = (self.up.deriv_value - self.down.deriv_value) / \
@@ -94,7 +97,7 @@ class DAG:
 
         return (delta*self.stock_value) + gamma
 
-    def fill_deriv_terminal(self, terminal_vals):
+    def fill_deriv_terminal(self, terminal_vals: list[float]) -> None:
         """
         Fills the end of the tree with the terminal values of the derivative security
 
@@ -116,7 +119,7 @@ class DAG:
 
             current_node.deriv_value = terminal_vals.pop()
 
-    def fill_deriv_latent(self, rate=0):
+    def fill_deriv_latent(self, rate: float = 0) -> None:
         """
 
         """
@@ -128,11 +131,11 @@ class DAG:
 
         self.deriv_value = self.calc_node_deriv_value(rate)
 
-    def fill_deriv(self, terminal_vals, rate=0):
+    def fill_deriv(self, terminal_vals: list[float], rate: float = 0) -> None:
         self.fill_deriv_terminal(terminal_vals)
         self.fill_deriv_latent(rate)
 
-    def print_node(self):
+    def print_node(self) -> None:
         print(
             f"""
             stock val: {round(self.stock_value, 4)}
@@ -145,7 +148,7 @@ class DAG:
 def _build_tree(
     u_price: float,
     strike: float,
-    u,
+    u: float,
     depth: int
 ) -> DAG:
     # init dag

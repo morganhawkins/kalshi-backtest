@@ -31,7 +31,7 @@ class DAGStepModel(BaseModel):
     def _value(
         u_price: float,
         strike: float,
-        u,
+        u: float,
         depth: int
     ) -> float:
         tree = _build_tree(u_price, strike, u, depth)
@@ -45,7 +45,7 @@ class DAGStepModel(BaseModel):
     def _delta(
         u_price: float,
         strike: float,
-        u,
+        u: float,
         depth: int
     ) -> float:
         tree = _build_tree(u_price, strike, u, depth)
@@ -68,7 +68,7 @@ class DAGStepModel(BaseModel):
         cls,
         u_price: float,
         strike: float,
-        u,
+        u: float,
         depth: int
     ) -> Dict[str, float]:
         tree = _build_tree(u_price, strike, u, depth)
