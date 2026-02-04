@@ -1,1 +1,1 @@
-from . geom_bm_agent import GeomBMAgent
+from . hedging_agent import HedgingAgent

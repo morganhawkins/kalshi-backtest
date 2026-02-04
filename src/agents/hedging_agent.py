@@ -136,20 +136,3 @@ class HedgingAgent(BaseAgent):
             self.rebalance_hedge(new_under_data, exposures)
 
         return exposures
-
-        exposures_rounded = {k: np_round(v, 4) for k, v in exposures.items()}
-        # if isnan(exposures['iv']):
-        print("-"*100)
-        print("            tte:", tte)
-        print("     port_delta:", exposures['portfolio_delta'])
-        print(" hedge_quantity:", self.under_position)
-        print("       in money:", self.strike < u_price)
-        print("            bid:", new_deriv_data["bid"])
-        print("            ask:", new_deriv_data["ask"])
-        print("     price_used:", round(d_price, 2))
-        print("(strike, price):", f"({self.strike}, {u_price})")
-        print("      est sigma:", estimated_sigma)
-        print("      imp sigma:", exposures_rounded['iv'])
-        print("          expos:", exposures_rounded)
-
-        return exposures
