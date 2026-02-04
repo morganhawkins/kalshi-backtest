@@ -30,7 +30,15 @@ class GBMStepModel(BaseModel):
         return _utils.gamma(u_price, strike, sigma, mu, tte)
     
     @classmethod
-    def __call__(cls, price: float, u_price: float, estimated_sigma: float, estimated_mu: float, tte: float, strike: float):
+    def __call__(
+        cls, 
+        price: float, 
+        u_price: float, 
+        estimated_sigma: float, 
+        estimated_mu: float, 
+        tte: float, 
+        strike: float
+    ):
         iv = cls._iv(price, u_price, strike, estimated_mu, tte)
         value = cls._value(u_price, strike, estimated_sigma, estimated_mu, tte)
         delta = cls._delta(u_price, strike, iv, estimated_mu, tte)

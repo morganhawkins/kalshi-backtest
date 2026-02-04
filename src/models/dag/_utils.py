@@ -18,10 +18,9 @@ class DAG:
         self.stock_value = stock_value
         self.deriv_value = deriv_value
 
-    def grow_tree(self, depth, u, d = None):
-        assert (depth > 0) and (u > 1), "invalid parameters passed"
-
+    def grow_tree(self, depth, u):
         d = 1/u        
+        assert (depth > 0) and (u > 1), "invalid parameters passed"
 
         if self.up == None:
             self.up = DAG(stock_value = self.stock_value*u)
@@ -152,6 +151,29 @@ class DAG:
             node gamma: {round(self.gamma, 4)}"""
             )
 
-            
+def _build_tree(
+    u_price: float, 
+    strike: float,
+    u,
+    depth: int
+) -> DAG:
+    # init dag
+    dag = DAG(stock_value=u_price)
 
+    # fill underlying values
+    dag.grow_tree(depth, u)
 
+    # get terminal underlying values and determine deriv cf
+    under_term = dag.get_terminal_values(get_stock=True)
+    deriv_term = [p>strike for p in under_term]
+
+    # fill terminal_deriv_values and check that correct number of items were passed
+    leftover = dag.fill_deriv_terminal(deriv_term)
+    if leftover:
+        raise Exception("Unexpected error in _build_treee. number " \
+                        "of terminal values != number of terminal nodes")
+    
+    # filling in intermediate nodes delta, gamma, and value
+    dag.fill_deriv_latent(rate=0)
+
+    return dag
